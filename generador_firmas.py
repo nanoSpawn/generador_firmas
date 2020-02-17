@@ -45,8 +45,7 @@ def firma(fn,n,e,d):
     if fn==None and n!=None:
         fn = n
     elif fn==n==None:
-        print('Se debe especificar al menos nombre o nombre de archivo')
-        exit()
+        sys.exit('Se debe especificar al menos nombre o nombre de archivo')
     
     #Si no hemos especificado algo, lo ponemos en blanco.
     if n==None: n=''
@@ -118,3 +117,6 @@ if not len(sys.argv) > 1 or newfolder:
     listado(directory)
 else:
     firma(filename, name, email, directory)
+
+#Cerramos el script y el intérprete, para evitar que se queden sesiones abiertas
+sys.exit()
