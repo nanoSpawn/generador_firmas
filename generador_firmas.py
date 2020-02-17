@@ -12,7 +12,8 @@ import pathlib
 #FUNCIONES
 
 #Definimos la función que hace las listas automáticas
-def listado():
+#Argumentos: d, cadena que especifica el nombre de la carpeta
+def listado(d):
 
     #Creamos el diccionario de firmas usando el CSV, el formato del archivo es:
     #1.Filename   2.Nombre    3.Email
@@ -26,7 +27,7 @@ def listado():
         count = 0;
 
         for row in listafirmas:
-            filename = directory+row['filename']+".html"
+            filename = d+row['filename']+".html"
             print(filename)
             html = template.render(name=row["name"], email=row["email"])
             with open(filename, "w+") as f:
@@ -36,22 +37,20 @@ def listado():
     print('Se han creado',count,'firmas')
     print('Recuerdo que es posible crear firmas individuales. Usar -h o --help para información')
     
-#Definimos la función para firmas sueltas    
+#Definimos la función para firmas sueltas
+#Los argumentos son los de la línea de comandos:
+#Filename, Name, Email y Directory
 def firma(fn,n,e,d):
-    
-    #Creamos una firma suelta, tan fácil como coger la plantilla, y aplicar valores
-    
-    #Si no hemos especificado algo, lo ponemos en blanco.
-    
-    if n==None: n=''
-    if e==None: e=''
-        
     
     if fn==None and n!=None:
         fn = n
     elif fn==n==None:
         print('Se debe especificar al menos nombre o nombre de archivo')
         exit()
+    
+    #Si no hemos especificado algo, lo ponemos en blanco.
+    if n==None: n=''
+    if e==None: e=''
     
     html = template.render(name=n, email=e)
     with open(d+fn+'.html', "w+") as f:
@@ -112,7 +111,10 @@ else:
 #machacar la plantilla HTML.
 pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
 
+
+#Y a crear las firmas, si no hay argumentos o solo se pasa la carpeta, se hacen todas.
+#Si hay argumentos se crea la firma personalizada.
 if not len(sys.argv) > 1 or newfolder:
-    listado()
+    listado(directory)
 else:
     firma(filename, name, email, directory)
