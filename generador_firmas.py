@@ -6,6 +6,8 @@ import csv
 import jinja2
 import argparse
 import sys
+import pathlib
+
 
 #FUNCIONES
 
@@ -24,7 +26,7 @@ def listado():
         count = 0;
 
         for row in listafirmas:
-            filename = "firmas automaticas/"+row['filename']+".html"
+            filename = directory+row['filename']+".html"
             print(filename)
             html = template.render(name=row["name"], email=row["email"])
             with open(filename, "w+") as f:
@@ -35,7 +37,7 @@ def listado():
     print('Recuerdo que es posible crear firmas individuales. Usar -h o --help para información')
     
 #Definimos la función para firmas sueltas    
-def firma(fn,n,e):
+def firma(fn,n,e,d):
     
     #Creamos una firma suelta, tan fácil como coger la plantilla, y aplicar valores
     
@@ -52,7 +54,7 @@ def firma(fn,n,e):
         exit()
     
     html = template.render(name=n, email=e)
-    with open('firmas automaticas/'+fn+'.html', "w+") as f:
+    with open(d+fn+'.html', "w+") as f:
         f.write(html)
         f.close()
     
@@ -85,22 +87,32 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-f', '--filename', action='store', dest='filename', help='Nombre del fichero html. Si se omite se usará el nombre de la persona especificado en -n')
 parser.add_argument('-n', '--name', action='store', dest='name', help='Nombre a mostrar en el mail. Si se hace necesario poner espacios en el nombre, usar comillas.')
 parser.add_argument('-e', '--email', action='store', dest='email', help='Email')
+parser.add_argument('-d', '--directory', action='store', dest='directory', help='Carpeta en la que guardar las firmas. Por defecto será /Firmas Automaticas/')
 
 args = parser.parse_args()
 filename=args.filename
 name=args.name
 email=args.email
 
+#Si solo queremos cambiar la carpeta, hemos de añadir la condición.
+#Lo hacemos ahora antes de poner el default.
+if filename==name==email==None and args.directory != None:
+    newfolder = True
+else:
+    newfolder = False
 
-if not len(sys.argv) > 1:
+#Ponemos el valor default si no especificamos uno nosotros
+if args.directory != None: 
+    directory = args.directory+'/'
+else:
+    directory='firmas automaticas/'
+    
+#Si la carpeta no existiera, la creamos ahora.
+#Es poco elegante, pero usar una subcarpeta evita problemas como 
+#machacar la plantilla HTML.
+pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
+
+if not len(sys.argv) > 1 or newfolder:
     listado()
 else:
-    firma(filename, name, email)
-
-
-
-
-
-    
-    
-    
+    firma(filename, name, email, directory)

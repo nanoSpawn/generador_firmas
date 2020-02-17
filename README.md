@@ -3,7 +3,7 @@
 
 Script realizado en Python 3.5
 
-Se ejecuta directamente y guarda en la carpeta "firmas automaticas" (podría ser necesario crearla de antemano) los HTML generados a partir de un archivo CSV, usando la plantilla.
+Se ejecuta directamente y guarda en la carpeta "firmas automaticas" (la creará si no existe) los HTML generados a partir de un archivo CSV, usando la plantilla.
 
 Puede crear firmas individuales usando la línea de comandos.
 
@@ -17,6 +17,10 @@ Puede crear firmas individuales usando la línea de comandos.
                         Si se hace necesario poner espacios en el nombre, usar comillas.
   
   **-e EMAIL, --email** Email
+  
+  **-d DIRECTORY, --directory**
+                        Carpeta en la que guardar las firmas, tanto automáticas (si solo se provee este argumento) como las personalizadas. Como el nombre, usar comillas si se necesitan espacios y **no** poner las barras /, solo el nombre de la carpeta.
+                        El script la creará si no existiera o usará la existente.
 
 Dependencias: csv, Jinja2.
 
